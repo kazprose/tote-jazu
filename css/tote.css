@@ -1,0 +1,48 @@
+/* ============================================
+   tote-jazu — төте жазуға арналған базалық стиль
+   Қолдану:  import 'tote-jazu/css/tote.css';
+   (немесе fonts/ папкасын жанына көшіріп <link> арқылы)
+   ============================================ */
+
+@font-face {
+  font-family: 'KazNet';
+  src: url('../fonts/KazNet.woff2') format('woff2'),
+       url('../fonts/KazNet.woff') format('woff'),
+       url('../fonts/KazNet.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --tote-font: 'KazNet', 'Noto Naskh Arabic', Georgia, serif;
+  --tote-line-height: 1.9;
+}
+
+html[dir="rtl"] body {
+  font-family: var(--tote-font);
+  direction: rtl;
+  text-align: right;
+  line-height: var(--tote-line-height);
+}
+
+/* Араб графикасы әріп аралығы мен бас әріпке шыдамайды */
+html[dir="rtl"] body * {
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+/* Сан, күн, латын мәтін үшін — <span class="tote-ltr">2024</span> */
+html[dir="rtl"] .tote-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
+}
+
+/* Тек төте мәтінді бір элементте көрсету үшін (бүкіл бет RTL болмаса) */
+.tote-text {
+  font-family: var(--tote-font);
+  direction: rtl;
+  unicode-bidi: isolate;
+  line-height: var(--tote-line-height);
+  letter-spacing: 0;
+}

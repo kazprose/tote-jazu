@@ -1,0 +1,51 @@
+{
+  "name": "tote-jazu",
+  "version": "1.0.0",
+  "description": "Кирилл → төте жазу (араб графикалы қазақ жазуы) конверторы: мәтін, HTML, Markdown, статикалық сайт айнасы және Astro интеграциясы",
+  "type": "module",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kazprose/tote-jazu.git"
+  },
+  "keywords": ["kazakh", "tote", "arabic-script", "cyrillic", "transliteration", "astro"],
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./converter": {
+      "types": "./dist/cyrl2tote.d.ts",
+      "import": "./dist/cyrl2tote.js"
+    },
+    "./mirror": {
+      "types": "./dist/mirror.d.ts",
+      "import": "./dist/mirror.js"
+    },
+    "./astro": {
+      "types": "./dist/astro.d.ts",
+      "import": "./dist/astro.js"
+    },
+    "./client/lang-switch.js": "./client/lang-switch.js",
+    "./css/tote.css": "./css/tote.css",
+    "./fonts/*": "./fonts/*",
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "tote-jazu": "./dist/cli.js"
+  },
+  "files": ["dist", "client", "css", "fonts", "README.md"],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --experimental-strip-types --no-warnings test/cyrl2tote.test.ts && node --experimental-strip-types --no-warnings test/mirror.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "typescript": "^5.7.0"
+  }
+}
