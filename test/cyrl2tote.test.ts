@@ -66,10 +66,10 @@ contains(cyrl2tote('Сәкен Сейфуллин'), 'سەيفۋللين', 'Се
 const seifullinev = cyrl2tote('Сәкен Сейфуллинев');
 contains(seifullinev, 'يەۆ', 'ev → йев (Сейфуллинев)');
 
-// Артефакттар: "Ықылас Ожайұлы" — крах болмауы керек
-const author = cyrl2tote('Ықылас Ожайұлы');
-eq(author.includes('Ы') || author.includes('Ы') || /[Ыа-я]/.test(author), false, 'Ықылас Ожайұлы — кирилл әріптер қалмайды');
-contains(author, ' ', 'Ықылас Ожайұлы — ұлы бөлек сөз');
+// Артефакттар: "Абай Құнанбайұлы" — крах болмауы керек
+const author = cyrl2tote('Абай Құнанбайұлы');
+eq(author.includes('Ы') || author.includes('Ы') || /[Ыа-я]/.test(author), false, 'Абай Құнанбайұлы — кирилл әріптер қалмайды');
+contains(author, ' ', 'Абай Құнанбайұлы — ұлы бөлек сөз');
 
 // Латын/орыс/ағылшын — сондай қалу керек
 contains(cyrl2tote('WhatsApp MP3'), 'WhatsApp', 'Latin words intact');

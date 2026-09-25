@@ -1,7 +1,7 @@
 # tote-jazu
 
 Кирилл → **төте жазу** (араб графикалы қазақ жазуы) конверторы.
-Бұрын [ozhaiuly-site](https://github.com/kazprose/ozhaiuly-site)-тың ішінде болған төте жазу функциясы басқа жобаларда қайта қолдануға болатын жеке пакетке шығарылды.
+Кез келген жобаға қосуға болатын жеке пакет.
 
 Ішінде:
 
@@ -35,7 +35,7 @@ npm install github:kazprose/tote-jazu#305e207
 import { cyrl2tote, cyrl2toteHtml, cyrl2toteMarkdown } from 'tote-jazu';
 
 cyrl2tote('Қазақ тілі');                    // 'قازاق ءتىلى'
-cyrl2tote('Ықылас Ожайұлы?');               // 'ىقىلاس وجاي ۇلى؟'
+cyrl2tote('Абай Құнанбайұлы?');             // 'اباي قۇنانباي ۇلى؟'
 cyrl2toteHtml('<p title="Сәлем">Алаш</p>'); // '<p title="سالەم">الاش</p>'
 cyrl2toteMarkdown(md);                      // front-matter title/description + body
 ```

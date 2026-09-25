@@ -18,7 +18,7 @@ import path from 'node:path';
 import { cyrl2tote, cyrl2toteHtml } from './cyrl2tote.ts';
 
 export interface ToteMirrorOptions {
-  /** Сайттың толық адресі, мысалы `https://ozhaiuly.kz` (соңғы `/`-сыз). */
+  /** Сайттың толық адресі, мысалы `https://example.kz` (соңғы `/`-сыз). */
   site: string;
   /** Төте нұсқаның URL префиксі. Әдепкі: `/tote`. */
   prefix?: string;

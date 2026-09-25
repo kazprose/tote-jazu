@@ -13,7 +13,7 @@
  *  - RSS title/description аудару, sitemap-ке /tote/ URL-дерін қосу
  */
 export interface ToteMirrorOptions {
-    /** Сайттың толық адресі, мысалы `https://ozhaiuly.kz` (соңғы `/`-сыз). */
+    /** Сайттың толық адресі, мысалы `https://example.kz` (соңғы `/`-сыз). */
     site: string;
     /** Төте нұсқаның URL префиксі. Әдепкі: `/tote`. */
     prefix?: string;
