@@ -23,8 +23,8 @@
 
 ```bash
 npm install github:kazprose/tote-jazu
-# нақты нұсқаға бекіту:
-npm install github:kazprose/tote-jazu#v1.0.0
+# нақты нұсқаға (commit-ке) бекіту:
+npm install github:kazprose/tote-jazu#305e207
 ```
 
 `dist/` репоға commit-телген, сондықтан орнатқанда build қажет емес.
