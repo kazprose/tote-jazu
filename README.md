@@ -145,6 +145,14 @@ import 'tote-jazu/css/tote.css'; // Vite/Astro қаріп файлдарын ө�
 `.tote-ltr` (сан/латын мәтін үшін) және `.tote-text` (бет RTL болмаса, жеке блокты төте етіп көрсету).
 Қаріпті `--tote-font` айнымалысы арқылы ауыстыруға болады.
 
+## Демо
+
+`demo/index.html` — KazNet қарпімен тірі конвертор (кирилл жазсаңыз, төтеге бірден аударады):
+
+```bash
+npm run build && python3 -m http.server 8000   # → http://localhost:8000/demo/
+```
+
 ## CLI
 
 ```bash

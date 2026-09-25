@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="kk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Төте жазу демо</title>
+<link rel="stylesheet" href="../css/tote.css">
+<style>
+  :root { --bg:#faf7f0; --fg:#2a241a; --muted:#7a6e58; --line:#e3d9c4; --accent:#a8842c; --card:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#13110c; --fg:#f0e8d5; --muted:#a89878; --line:#3a3326; --accent:#c9a84c; --card:#1a1710; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:16px/1.6 system-ui, sans-serif; }
+  main { max-width: 1000px; margin: 0 auto; padding: 32px 16px 48px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 24px; font-size: 14px; }
+  .grid { display:grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .label { font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin-bottom:8px; display:flex; justify-content:space-between; }
+  textarea { width:100%; min-height:220px; border:0; background:transparent; color:inherit; font:17px/1.7 Georgia, serif; resize:vertical; outline:none; }
+  .tote-out { min-height:220px; font-size:22px; white-space:pre-wrap; text-align:right; }
+  .compare { margin-top:16px; }
+  .row { display:grid; grid-template-columns: 150px 1fr; gap:12px; align-items:center; padding:10px 0; border-top:1px solid var(--line); }
+  .row:first-of-type { border-top:0; }
+  .row .name { font-size:13px; color:var(--muted); }
+  .row .sample { font-size:24px; direction:rtl; text-align:right; line-height:1.9; }
+  .fallback { font-family: 'Noto Naskh Arabic', 'DejaVu Sans', serif; }
+  .status { font-size:13px; margin-top:16px; color:var(--muted); }
+  .status b { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Төте жазу — KazNet қарпі</h1>
+  <p class="sub">Сол жақта кирилл, оң жақта tote-jazu конверторы аударған мәтін (tote.css → KazNet).</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label"><span>Кирилл</span></div>
+      <textarea id="src">Қазақ тілі — ата-бабамыздан қалған асыл мұра.
+Ықылас Ожайұлы, «Алаш» өлеңі.
+
+Әуелі аят, хадис сөздің басы,
+Қосарлы бәйітмысал келді арасы.
+Сәлем, әлем! Қалайсыз? Бүгін күн жылы; кешке жаңбыр.</textarea>
+    </div>
+    <div class="card">
+      <div class="label"><span>Төте (KazNet)</span><span id="count"></span></div>
+      <div id="out" class="tote-out tote-text"></div>
+    </div>
+  </div>
+
+  <div class="card compare">
+    <div class="label"><span>Қаріп салыстыру</span></div>
+    <div class="row"><div class="name">KazNet</div><div class="sample tote-text" id="s1"></div></div>
+    <div class="row"><div class="name">Жүйелік қаріп</div><div class="sample fallback" id="s2"></div></div>
+  </div>
+
+  <div class="status" id="status">Қаріп жүктелуде…</div>
+</main>
+
+<script type="module">
+  import { cyrl2tote } from '../dist/cyrl2tote.js';
+  const src = document.getElementById('src');
+  const out = document.getElementById('out');
+  const render = () => { out.textContent = cyrl2tote(src.value); };
+  src.addEventListener('input', render);
+  render();
+
+  const sample = cyrl2tote('Қазақ әдебиеті, өлең-жыр, мұңлы күй, ғасырлар үні?');
+  document.getElementById('s1').textContent = sample;
+  document.getElementById('s2').textContent = sample;
+
+  document.fonts.load('24px KazNet', sample).then(() => document.fonts.ready).then(() => {
+    const ok = document.fonts.check('24px KazNet', sample);
+    document.getElementById('status').innerHTML = ok
+      ? 'KazNet қарпі: <b>жүктелді ✓</b>'
+      : 'KazNet қарпі: <b>жүктелмеді ✗</b>';
+    document.documentElement.dataset.fontOk = ok ? '1' : '0';
+  });
+</script>
+</body>
+</html>
