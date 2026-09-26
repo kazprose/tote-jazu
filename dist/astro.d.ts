@@ -10,10 +10,21 @@
  *   });
  */
 import { type ToteMirrorOptions } from './mirror.ts';
-export type ToteAstroOptions = Partial<ToteMirrorOptions>;
+export type ToteAstroOptions = Partial<ToteMirrorOptions> & {
+    /**
+     * KazNet қарпі мен tote.css-ті барлық беттерге қосу (`<html dir="rtl">`,
+     * `body.tote`, `.tote-text`, `[lang="kk-Arab"]` KazNet-пен көрсетіледі). Әдепкі: `true`.
+     */
+    font?: boolean;
+    /** `/tote/` айнасын жасау. Әдепкі: `true`. Тек қаріп керек болса — `false`. */
+    mirror?: boolean;
+};
 interface MinimalAstroIntegration {
     name: string;
     hooks: {
+        'astro:config:setup'?: (params: {
+            injectScript: (stage: 'page-ssr', content: string) => void;
+        }) => void | Promise<void>;
         'astro:config:done'?: (params: {
             config: {
                 site?: string;

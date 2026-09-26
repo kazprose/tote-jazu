@@ -25,7 +25,14 @@ export interface ToteMirrorOptions {
     sitemapFiles?: string[];
     /** Кирилл нұсқаға да hreflang қосу керек пе. Әдепкі: `true`. */
     addHreflangToOriginal?: boolean;
+    /**
+     * KazNet қарпі мен tote.css-ті төте беттерге автоматты қосу. Әдепкі: `true`.
+     * Файлдар `<dist>/_tote-jazu/`-ге көшіріліп, әр төте бетке <link> қосылады.
+     */
+    injectFont?: boolean;
 }
+/** Төте беттерге қосылатын стиль файлының URL жолы */
+export declare const TOTE_ASSETS_DIR = "/_tote-jazu";
 export interface MirrorLogger {
     info(msg: string): void;
 }

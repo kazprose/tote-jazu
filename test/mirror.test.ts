@@ -48,6 +48,11 @@ ok(out.includes('href="/tote/poems"') && !out.includes('/tote/tote'), '/tote/ қ
 ok(out.includes('data-tote-skip>Төте</a>'), 'data-tote-skip мәтіні аударылмайды');
 ok(out.includes('data-i18n="lang-switch">Төте</a>'), 'data-i18n="lang-switch" мәтіні аударылмайды');
 ok(out.includes('<title>ولەڭدەر</title>'), 'мәтін аударылды');
+ok(out.includes('<link rel="stylesheet" href="/_tote-jazu/css/tote.css"></head>'), 'KazNet: tote.css head соңына қосылды');
+ok(out.includes('href="/_tote-jazu/fonts/KazNet.woff2" as="font"'), 'KazNet: woff2 preload');
+ok(!out.includes('/tote/_tote-jazu'), 'KazNet: жолы /tote/-пен префикстелмейді');
+const noFont = transformHtmlToTote(page, '/poems.html', { ...opts, injectFont: false });
+ok(!noFont.includes('_tote-jazu'), 'injectFont: false — қаріп қосылмайды');
 
 const idx = transformHtmlToTote('<html><head></head><body></body></html>', '/index.html', opts);
 ok(idx.includes('hreflang="kk-Arab" href="https://example.kz/tote"'), 'index → /tote');
@@ -86,6 +91,9 @@ ok((await fs.readFile(path.join(tmp, 'tote/index.html'), 'utf-8')).includes('س�
 ok((await fs.readFile(path.join(tmp, 'tote/poems/rss.xml'), 'utf-8')).includes('الاش'), 'tote RSS жасалды');
 ok((await fs.readFile(path.join(tmp, 'index.html'), 'utf-8')).includes('hreflang="kk-Arab"'), 'кирилл бетке hreflang жазылды');
 ok((await fs.readFile(path.join(tmp, 'sitemap-0.xml'), 'utf-8')).includes('/tote/poems'), 'sitemap жаңартылды');
+ok((await fs.stat(path.join(tmp, '_tote-jazu/fonts/KazNet.woff2'))).size > 1000, 'KazNet.woff2 dist-ке көшірілді');
+ok((await fs.readFile(path.join(tmp, '_tote-jazu/css/tote.css'), 'utf-8')).includes("url('../fonts/KazNet.woff2')"), 'tote.css dist-ке көшірілді');
+ok(!(await fs.readFile(path.join(tmp, 'index.html'), 'utf-8')).includes('_tote-jazu'), 'кирилл бетке қаріп қосылмайды');
 const n2 = await mirrorDirectory(tmp, opts);
 ok(n2 === 2, 'қайта жүгіргенде tote/ папкасы қайта өңделмейді');
 await fs.rm(tmp, { recursive: true, force: true });

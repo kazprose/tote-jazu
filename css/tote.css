@@ -1,7 +1,7 @@
 /* ============================================
-   tote-jazu — төте жазуға арналған базалық стиль
-   Қолдану:  import 'tote-jazu/css/tote.css';
-   (немесе fonts/ папкасын жанына көшіріп <link> арқылы)
+   tote-jazu — төте жазу стилі. Қаріп: ТЕК KazNet.
+   Қолдану (бандлер):  import 'tote-jazu/css/tote.css';
+   Бандлерсіз:        import 'tote-jazu/font'  немесе  <script src=".../tote-jazu/client/font.js"></script>
    ============================================ */
 
 @font-face {
@@ -15,34 +15,52 @@
 }
 
 :root {
-  --tote-font: 'KazNet', 'Noto Naskh Arabic', Georgia, serif;
+  --tote-font: 'KazNet', serif;
   --tote-line-height: 1.9;
 }
 
-html[dir="rtl"] body {
-  font-family: var(--tote-font);
-  direction: rtl;
-  text-align: right;
+/* Төте жазу KazNet-пен көрсетілетін жерлер:
+   - бүкіл бет:   <html dir="rtl">  немесе  <body class="tote">
+   - бір блок:    class="tote-text"  немесе  lang="kk-Arab" */
+html[dir="rtl"] body,
+body.tote,
+.tote-text,
+[lang="kk-Arab"] {
+  font-family: var(--tote-font) !important;
   line-height: var(--tote-line-height);
 }
 
-/* Араб графикасы әріп аралығы мен бас әріпке шыдамайды */
-html[dir="rtl"] body * {
-  letter-spacing: 0 !important;
+html[dir="rtl"] body,
+body.tote {
+  direction: rtl;
+  text-align: right;
+}
+
+.tote-text,
+[lang="kk-Arab"] {
+  direction: rtl;
+  unicode-bidi: isolate;
+}
+
+/* Бет ішіндегі барлық элемент (тақырып, батырма, input) да KazNet болсын */
+/* (иконка қаріптері — <i>, *icon*, fa-* — тиілмейді) */
+html[dir="rtl"] body *:not(i, [class*="icon"], [class*="fa-"]),
+body.tote *:not(i, [class*="icon"], [class*="fa-"]),
+.tote-text *:not(i, [class*="icon"], [class*="fa-"]),
+[lang="kk-Arab"] *:not(i, [class*="icon"], [class*="fa-"]) {
+  font-family: inherit !important;
+  letter-spacing: 0 !important;   /* араб графикасы әріп аралығына шыдамайды */
   text-transform: none !important;
 }
 
-/* Сан, күн, латын мәтін үшін — <span class="tote-ltr">2024</span> */
-html[dir="rtl"] .tote-ltr {
-  direction: ltr;
-  unicode-bidi: embed;
+/* Код блоктары өз қарпінде қалады */
+html[dir="rtl"] body :is(code, pre, kbd, samp),
+body.tote :is(code, pre, kbd, samp) {
+  font-family: ui-monospace, monospace !important;
 }
 
-/* Тек төте мәтінді бір элементте көрсету үшін (бүкіл бет RTL болмаса) */
-.tote-text {
-  font-family: var(--tote-font);
-  direction: rtl;
-  unicode-bidi: isolate;
-  line-height: var(--tote-line-height);
-  letter-spacing: 0;
+/* Сан, күн, латын мәтін үшін — <span class="tote-ltr">2024</span> */
+.tote-ltr {
+  direction: ltr;
+  unicode-bidi: embed;
 }

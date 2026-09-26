@@ -8,7 +8,14 @@
     "type": "git",
     "url": "git+https://github.com/kazprose/tote-jazu.git"
   },
-  "keywords": ["kazakh", "tote", "arabic-script", "cyrillic", "transliteration", "astro"],
+  "keywords": [
+    "kazakh",
+    "tote",
+    "arabic-script",
+    "cyrillic",
+    "transliteration",
+    "astro"
+  ],
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
@@ -28,6 +35,8 @@
       "types": "./dist/astro.d.ts",
       "import": "./dist/astro.js"
     },
+    "./font": "./client/font.js",
+    "./client/font.js": "./client/font.js",
     "./client/lang-switch.js": "./client/lang-switch.js",
     "./css/tote.css": "./css/tote.css",
     "./fonts/*": "./fonts/*",
@@ -36,12 +45,20 @@
   "bin": {
     "tote-jazu": "./dist/cli.js"
   },
-  "files": ["dist", "client", "css", "fonts", "README.md"],
+  "files": [
+    "dist",
+    "client",
+    "css",
+    "fonts",
+    "README.md",
+    "AGENTS.md",
+    "CLAUDE.md"
+  ],
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "node scripts/build-font.mjs && tsc -p tsconfig.json",
     "test": "node --experimental-strip-types --no-warnings test/cyrl2tote.test.ts && node --experimental-strip-types --no-warnings test/mirror.test.ts"
   },
   "devDependencies": {

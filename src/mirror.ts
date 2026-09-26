@@ -15,6 +15,7 @@
 
 import { promises as fs } from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { cyrl2tote, cyrl2toteHtml } from './cyrl2tote.ts';
 
 export interface ToteMirrorOptions {
@@ -30,14 +31,25 @@ export interface ToteMirrorOptions {
   sitemapFiles?: string[];
   /** Кирилл нұсқаға да hreflang қосу керек пе. Әдепкі: `true`. */
   addHreflangToOriginal?: boolean;
+  /**
+   * KazNet қарпі мен tote.css-ті төте беттерге автоматты қосу. Әдепкі: `true`.
+   * Файлдар `<dist>/_tote-jazu/`-ге көшіріліп, әр төте бетке <link> қосылады.
+   */
+  injectFont?: boolean;
 }
+
+/** Төте беттерге қосылатын стиль файлының URL жолы */
+export const TOTE_ASSETS_DIR = '/_tote-jazu';
+const TOTE_CSS_HREF = TOTE_ASSETS_DIR + '/css/tote.css';
 
 export interface MirrorLogger {
   info(msg: string): void;
 }
 
+const TOTE_ASSETS_DIR_PREFIX = '/_tote-jazu/';
+
 const DEFAULT_SKIP_HREF_PREFIXES = [
-  '/_astro/', '/pagefind/', '/fonts/',
+  '/_astro/', '/pagefind/', '/fonts/', TOTE_ASSETS_DIR_PREFIX,
   'mailto:', 'tel:', 'http://', 'https://', '//', '#',
   '/sitemap', '/favicon', '/robots.txt', '/CNAME', '/google',
   'data:', 'javascript:',
@@ -57,6 +69,7 @@ interface ResolvedOptions {
   rssFiles: string[];
   sitemapFiles: string[];
   addHreflangToOriginal: boolean;
+  injectFont: boolean;
 }
 
 function resolveOptions(opts: ToteMirrorOptions): ResolvedOptions {
@@ -69,6 +82,7 @@ function resolveOptions(opts: ToteMirrorOptions): ResolvedOptions {
     rssFiles: opts.rssFiles ?? [],
     sitemapFiles: opts.sitemapFiles ?? ['sitemap-0.xml'],
     addHreflangToOriginal: opts.addHreflangToOriginal ?? true,
+    injectFont: opts.injectFont ?? true,
   };
 }
 
@@ -150,6 +164,15 @@ export function transformHtmlToTote(html: string, relPath: string, opts: ToteMir
     out = out.replace(/<\/head>/i, hreflangLinks(origUrl, toteUrl) + '</head>');
   }
 
+  // KazNet қарпі: tote.css-ті <head> соңына (сайт стильдерінен кейін) қосу
+  if (o.injectFont && !out.includes(TOTE_CSS_HREF)) {
+    out = out.replace(
+      /<\/head>/i,
+      `<link rel="preload" href="${TOTE_ASSETS_DIR}/fonts/KazNet.woff2" as="font" type="font/woff2" crossorigin>` +
+        `<link rel="stylesheet" href="${TOTE_CSS_HREF}"></head>`,
+    );
+  }
+
   out = out.replace(/\b(href|src|action)\s*=\s*(["'])([^"']*)\2/gi, (m, attr, q, val) =>
     shouldRewriteHref(val, o) ? `${attr}=${q}${rewriteHref(val, o)}${q}` : m,
   );
@@ -204,6 +227,17 @@ async function walkHtml(dir: string, base: string, skipTop: string, out: string[
   return out;
 }
 
+/** css/tote.css + fonts/KazNet.* → <dist>/_tote-jazu/ */
+async function copyFontAssets(distPath: string): Promise<void> {
+  const pkgRoot = fileURLToPath(new URL('..', import.meta.url));
+  const destRoot = path.join(distPath, TOTE_ASSETS_DIR.slice(1));
+  for (const rel of ['css/tote.css', 'fonts/KazNet.woff2', 'fonts/KazNet.woff', 'fonts/KazNet.ttf']) {
+    const dest = path.join(destRoot, rel);
+    await fs.mkdir(path.dirname(dest), { recursive: true });
+    await fs.copyFile(path.join(pkgRoot, rel), dest);
+  }
+}
+
 /**
  * Build папкасын толық өңдейді: әр HTML-дың төте көшірмесін `<dist>/<prefix>/`-ге
  * жазады, RSS пен sitemap-ті жаңартады. Қайтарады: өңделген HTML саны.
@@ -216,6 +250,8 @@ export async function mirrorDirectory(
   const o = resolveOptions(opts);
   const prefixDir = o.prefix.slice(1);
   const toteDir = path.join(distPath, prefixDir);
+
+  if (o.injectFont) await copyFontAssets(distPath);
 
   const htmlFiles = await walkHtml(distPath, distPath, prefixDir.split('/')[0]);
   logger.info(`tote-jazu: ${htmlFiles.length} HTML файл табылды`);

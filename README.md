@@ -3,6 +3,28 @@
 Кирилл → **төте жазу** (араб графикалы қазақ жазуы) конверторы.
 Кез келген жобаға қосуға болатын жеке пакет.
 
+> **Қаріп: тек KazNet.** Ол пакеттің ішінде бар және төмендегі кез келген тәсілмен **автоматты** қосылады.
+> Басқа қаріп қоспаңыз. AI агенттерге арналған нұсқаулық: [AGENTS.md](AGENTS.md).
+
+## Жылдам бастау
+
+```bash
+npm install github:kazprose/tote-jazu
+```
+
+| Жоба | Бір қадам (KazNet өзі қосылады) |
+|---|---|
+| Astro | `integrations: [tote()]` (`import tote from 'tote-jazu/astro'`) |
+| Vite / React / Vue / Next.js | `import 'tote-jazu/css/tote.css';` |
+| Бандлерсіз HTML | `client/font.js` → `<script src="/tote-font.js"></script>` |
+| Статикалық сайт | `npx tote-jazu mirror ./dist --site https://сайт.kz` |
+
+Төте мәтін тұрған элементке `class="tote-text"` қойыңыз:
+
+```html
+<p class="tote-text">{cyrl2tote('Қазақ тілі')}</p>   <!-- قازاق ءتىلى, KazNet қарпімен -->
+```
+
 Ішінде:
 
 | Бөлік | Импорт | Не істейді |
@@ -12,7 +34,7 @@
 | **Astro интеграциясы** | `tote-jazu/astro` | Айнаны `astro build` соңында автоматты іске қосады |
 | **CLI** | `npx tote-jazu` | stdin → төте; `mirror` командасы |
 | **Тіл ауыстырғыш** | `tote-jazu/client/lang-switch.js` | Кирилл ⇄ Төте батырмасы (браузер) |
-| **CSS + қаріп** | `tote-jazu/css/tote.css`, `tote-jazu/fonts/*` | KazNet қарпі, RTL базалық стиль |
+| **CSS + қаріп** | `tote-jazu/css/tote.css`, `tote-jazu/font`, `tote-jazu/fonts/*` | KazNet қарпі (автоматты), RTL стиль |
 
 Алгоритм [ErbosynNurbol/Cyrl2ToteConverter.CSharp](https://github.com/ErbosynNurbol/Cyrl2ToteConverter.CSharp)-тан TypeScript-ке портталған.
 
@@ -24,7 +46,7 @@
 ```bash
 npm install github:kazprose/tote-jazu
 # нақты нұсқаға (commit-ке) бекіту:
-npm install github:kazprose/tote-jazu#305e207
+npm install github:kazprose/tote-jazu#<commit>
 ```
 
 `dist/` репоға commit-телген, сондықтан орнатқанда build қажет емес.
@@ -133,17 +155,24 @@ await mirrorDirectory('./public', { site: 'https://example.kz' }, console);
 
 Параметрлермен: `initLangSwitch({ selector: '#langSwitch', prefix: '/tote', toteLabel: 'Төте', cyrlLabel: 'Кирилл' })`.
 
-## 5. CSS және қаріп
+## 5. CSS және KazNet қаріпі
 
-```js
-import 'tote-jazu/css/tote.css'; // Vite/Astro қаріп файлдарын өзі көшіреді
-```
+Қаріп автоматты қосылады:
 
-Бандлер жоқ болса, `css/` және `fonts/` папкаларын жанына көшіріп `<link rel="stylesheet" href="/css/tote.css">` қосыңыз.
+- **Astro:** `tote()` интеграциясы барлық беттерге өзі қосады (`font: false` — өшіру).
+- **`mirror` / CLI:** `/tote/` беттерге `/_tote-jazu/css/tote.css` сілтемесі мен қаріп файлдары өзі қосылады (`injectFont: false` — өшіру).
+- **Бандлер (Vite, Next.js...):** `import 'tote-jazu/css/tote.css';`
+- **Бандлерсіз:** `client/font.js`. Бұл жалғыз файл, KazNet оның ішінде (base64) бар: `<script src="/tote-font.js"></script>` немесе `import 'tote-jazu/font'`.
 
-`tote.css` береді: `@font-face KazNet`, `html[dir="rtl"] body` үшін RTL + қаріп, `letter-spacing: 0` (араб жазуы әріп аралығына шыдамайды),
-`.tote-ltr` (сан/латын мәтін үшін) және `.tote-text` (бет RTL болмаса, жеке блокты төте етіп көрсету).
-Қаріпті `--tote-font` айнымалысы арқылы ауыстыруға болады.
+KazNet-пен көрсетілетін жерлер:
+
+| Селектор | Қашан |
+|---|---|
+| `<html dir="rtl">`, `<body class="tote">` | Бүкіл бет төте болса |
+| `class="tote-text"`, `lang="kk-Arab"` | Бір блок/сөз төте болса (бет кирилл болып қалады) |
+
+Бұл жерлерде жобаның өз қарпі (мысалы `h1 { font-family: Arial }`) KazNet-ті баса алмайды. `code`/`pre` пен иконка қаріптеріне (`<i>`, `*icon*`, `fa-*`) тиіспейді.
+Сан/латын мәтін үшін `.tote-ltr` класы бар.
 
 ## Демо
 
